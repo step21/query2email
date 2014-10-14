@@ -45,6 +45,10 @@ $body_display = '';
 echo '<table class="table table-striped table-bordered table-hover">' . "\n";
 foreach ( $inputs as $key => $value )
 {
+    // hacky fix to strip current input type selector
+    if ( '_t' == substr( $key, -2) )
+        $key = substr( $key, 0, -2);
+
     $body_display .= '<tr><td style="font-weight: bold">' . strtr(ucfirst($key), '-', ' ') . '</td>' . "<td>$value</td></tr>\n";
 }
 echo '<h3 class="alert alert-success">' . $configs['_success'] . "</h3>\n";
@@ -57,6 +61,9 @@ $body = $configs['_success'] . "\n\n";
 $body_party_b = "A form has been submitted.\n\n";
 foreach ( $inputs as $key => $value )
 {
+    // hacky fix to strip current input type selector
+    if ( '_t' == substr( $key, -2) )
+        $key = substr( $key, 0, -2);
     $body         .= strtr(ucfirst($key), '-', ' ') . ": $value\n";
     $body_party_b .= strtr(ucfirst($key), '-', ' ') . ": $value\n";
 }
