@@ -51,7 +51,7 @@ foreach ( $inputs as $key => $value )
 
     $body_display .= '<tr><td style="font-weight: bold">' . strtr(ucfirst($key), '-', ' ') . '</td>' . "<td>$value</td></tr>\n";
 }
-echo '<h3 class="alert alert-success">' . $configs['_success'] . "</h3>\n";
+echo '<h4 class="alert alert-success">' . $configs['_success'] . "</h4>\n";
 echo $body_display;
 echo "</table>\n";
 
