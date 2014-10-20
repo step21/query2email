@@ -32,7 +32,54 @@ elseif ( !empty($inputs['email-address']) )
 elseif ( !empty($inputs['from']) )
    $from = $inputs['from'];
 
+if ( empty($configs['_time']) )
+    $configs['_time'] = time();
+    
+foreach ( $inputs as $key => $val )
+{
+    $field_test = substr( $key, -2);
 
+    switch ( $field_test )
+    {
+        case '_s':
+            $subs=''; 
+            $matches = array();
+            $subs = preg_match_all("/@([\w-]+)/", $val, $matches);
+            // dumper($matches);
+
+            for ( $k = 0; $k < count($matches[0]); $k++ )
+            {   
+                // put your special case here to replace variables
+                // this is a silly parser
+
+                // replace all possible input vars
+                if ( isset($inputs[ $matches[1][$k] ]) )
+                {
+                    $val = str_replace($matches[0][$k], 
+                                       $inputs[$matches[1][$k]],
+                                       $val);
+                    $inputs[$key] = $val;
+                }
+                // replace all possible config vars
+                if ( isset($configs[ $matches[1][$k] ]) )
+                {
+                    $val = str_replace($matches[0][$k], 
+                                       $configs[$matches[1][$k]],
+                                       $val);
+                    $inputs[$key] = $val;
+                }
+                // special operationt to conver the entire output to 
+                // a short url using a service, like ours
+                if ( 'u2s' == $matches[1][$k] )
+                {
+                    $short_url = get_short_url( $val );
+                    if ( FAlSE != $short_url) 
+                        $inputs[$key] = $short_url;
+                }
+            }
+            // dumper($inputs); 
+    }
+}
 
 /*
 echo "<pre>";
@@ -46,7 +93,8 @@ echo '<table class="table table-striped table-bordered table-hover">' . "\n";
 foreach ( $inputs as $key => $value )
 {
     // hacky fix to strip current input type selector
-    if ( '_t' == substr( $key, -2) )
+    $field_test = substr( $key, -2);
+    if ( '_t' == $field_test || '_h' == $field_test || '_s' == $field_test )
         $key = substr( $key, 0, -2);
 
     $body_display .= '<tr><td style="font-weight: bold">' . strtr(ucfirst($key), '-', ' ') . '</td>' . "<td>$value</td></tr>\n";
@@ -62,7 +110,8 @@ $body_party_b = "A form has been submitted.\n\n";
 foreach ( $inputs as $key => $value )
 {
     // hacky fix to strip current input type selector
-    if ( '_t' == substr( $key, -2) )
+    $field_test = substr( $key, -2);
+    if ( '_t' == $field_test || '_h' == $field_test || '_s' == $field_test )
         $key = substr( $key, 0, -2);
     $body         .= strtr(ucfirst($key), '-', ' ') . ": $value\n";
     $body_party_b .= strtr(ucfirst($key), '-', ' ') . ": $value\n";
