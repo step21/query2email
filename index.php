@@ -34,7 +34,11 @@ elseif ( !empty($inputs['from']) )
 
 if ( empty($configs['_time']) )
     $configs['_time'] = time();
-    
+   
+
+// dumper($inputs);
+// dumper($configs);
+
 foreach ( $inputs as $key => $val )
 {
     $field_test = substr( $key, -2);
@@ -59,6 +63,7 @@ foreach ( $inputs as $key => $val )
                                        $inputs[$matches[1][$k]],
                                        $val);
                     $inputs[$key] = $val;
+                    // dumper($val);
                 }
                 // replace all possible config vars
                 if ( isset($configs[ $matches[1][$k] ]) )
@@ -72,21 +77,18 @@ foreach ( $inputs as $key => $val )
                 // a short url using a service, like ours
                 if ( 'u2s' == $matches[1][$k] )
                 {
+                    $val = str_replace('@' . $matches[1][$k], '', $val);
+                    // dumper($val);
                     $short_url = get_short_url( $val );
                     if ( FAlSE != $short_url) 
                         $inputs[$key] = $short_url;
+                    // dumper($short_url);
                 }
             }
             // dumper($inputs); 
     }
 }
 
-/*
-echo "<pre>";
-var_dump($inputs);
-var_dump($configs);
-echo "</pre>";
-*/
 
 $body_display = '';
 echo '<table class="table table-striped table-bordered table-hover">' . "\n";
@@ -97,7 +99,7 @@ foreach ( $inputs as $key => $value )
     if ( '_t' == $field_test || '_h' == $field_test || '_s' == $field_test )
         $key = substr( $key, 0, -2);
 
-    $body_display .= '<tr><td style="font-weight: bold">' . strtr(ucfirst($key), '-', ' ') . '</td>' . "<td>$value</td></tr>\n";
+    $body_display .= '<tr><td style="font-weight: bold">' . ucwords(strtr($key, '-', ' ')) . '</td>' . "<td>$value</td></tr>\n";
 }
 echo '<h4 class="alert alert-success">' . $configs['_success'] . "</h4>\n";
 echo $body_display;
@@ -113,8 +115,8 @@ foreach ( $inputs as $key => $value )
     $field_test = substr( $key, -2);
     if ( '_t' == $field_test || '_h' == $field_test || '_s' == $field_test )
         $key = substr( $key, 0, -2);
-    $body         .= strtr(ucfirst($key), '-', ' ') . ": $value\n";
-    $body_party_b .= strtr(ucfirst($key), '-', ' ') . ": $value\n";
+    $body         .= ucwords(strtr($key, '-', ' ')) . ": $value\n";
+    $body_party_b .= ucwords(strtr($key, '-', ' ')) . ": $value\n";
 }
 
 // remail($to, $from, $subject, $message, $files);
