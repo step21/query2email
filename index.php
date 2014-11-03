@@ -79,7 +79,7 @@ foreach ( $inputs as $key => $val )
                 {
                     $val = str_replace('@' . $matches[1][$k], '', $val);
                     // dumper($val);
-                    $short_url = get_short_url( $val );
+                    $short_url = get_short_url( $val, $configs['_u2s'] );
                     if ( FAlSE != $short_url) 
                         $inputs[$key] = $short_url;
                     // dumper($short_url);
