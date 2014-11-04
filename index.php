@@ -4,6 +4,8 @@
 
  */
 
+include_once '../lib/config.php';
+include_once '../lib/utils.php';
 include_once '../lib/shared.php';
 include_once '../lib/email.php';
 include_once '../lib/header.php';
