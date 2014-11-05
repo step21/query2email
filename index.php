@@ -62,7 +62,7 @@ foreach ( $inputs as $key => $val )
                 if ( isset($inputs[ $matches[1][$k] ]) )
                 {
                     $val = str_replace($matches[0][$k], 
-                                       $inputs[$matches[1][$k]],
+                                       cleanVal($inputs[$matches[1][$k]]),
                                        $val);
                     $inputs[$key] = $val;
                     // dumper($val);
@@ -71,9 +71,10 @@ foreach ( $inputs as $key => $val )
                 if ( isset($configs[ $matches[1][$k] ]) )
                 {
                     $val = str_replace($matches[0][$k], 
-                                       $configs[$matches[1][$k]],
+                                       cleanVal($configs[$matches[1][$k]]),
                                        $val);
                     $inputs[$key] = $val;
+                    // dumper($val);
                 }
                 // special operationt to conver the entire output to 
                 // a short url using a service, like ours
@@ -101,7 +102,15 @@ foreach ( $inputs as $key => $value )
     if ( '_t' == $field_test || '_h' == $field_test || '_s' == $field_test )
         $key = substr( $key, 0, -2);
 
-    $body_display .= '<tr><td style="font-weight: bold">' . ucwords(strtr($key, '-', ' ')) . '</td>' . "<td>$value</td></tr>\n";
+        if ( is_email($value) )
+            $value = '<a href="mailto:' . $value . '" title="Email ' .
+                $value. '">' . $value . '</a>';
+        if ( is_url($value) )
+            $value = '<a href="' . $value . '" title="File ' . $value . '">' .
+                $value . '</a>';
+
+
+    $body_display .= '<tr><td style="font-weight: bold">' . ucwords(strtr($key, '-', ' ')) . '</td>' . "<td>" . nl2br($value) . "</td></tr>\n";
 }
 echo '<h4 class="alert alert-success">' . $configs['_success'] . "</h4>\n";
 echo $body_display;
